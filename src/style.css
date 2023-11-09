@@ -1,0 +1,100 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+p {
+    margin: 0;
+}
+
+.container {
+    width: 31.25rem;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: .3125rem .9375rem;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 .1875rem;
+}
+
+button.danger {
+    background: #eb2f06;
+}
+
+button.primary {
+    background: #4a69bd
+}
+
+button.success {
+    background: #2ed573
+}
+
+input {
+    padding: .5rem .9375rem;
+    outline: 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+form input {
+    flex: 1;
+    margin-right: 15px;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    padding: .625rem 0;
+    cursor: pointer;
+}
+
+li:hover {
+    background: lightblue;
+    border-radius: 5px;
+    padding: 10px 0 10px 5px;
+}
+
+li p,
+input {
+    flex: 1;
+}
+
+li .todo {
+    flex: 0 0 20px;
+    height: 20px;
+    border-radius: 30px;
+    margin-right: 15px;
+    border: 2px solid #333;
+}
+
+li .todo.done {
+    background: #333;
+}
+
+li p.done {
+    text-decoration: line-through;
+}
