@@ -4,7 +4,9 @@ import "./style.css";
 // SÉLECTIONNER LES ÉLÉMENTS HTML UL, FORM ET INPUT
 const ul = document.querySelector("ul");
 const form = document.querySelector("form");
-const input = document.querySelector("form > input"); // input principal "Ajouter"
+const input = document.querySelector<HTMLInputElement>("form > input"); // input principal "Ajouter"
+
+let timer: number;
 
 // Définir un tableau todos qui contient des objets représentant des tâches à faire
 const todos = [
