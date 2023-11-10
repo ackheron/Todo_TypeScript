@@ -1,15 +1,16 @@
 // IMPORTER UN FICHIER CSS QUI CONTIENT LE STYLE DU DOCUMENT HTML
-import "./style.css";
+import { Todo } from "./interfaces/todo.interface.js";
+import "./style/style.css";
 
 // SÉLECTIONNER LES ÉLÉMENTS HTML UL, FORM ET INPUT
-const ul = document.querySelector("ul");
-const form = document.querySelector("form");
-const input = document.querySelector<HTMLInputElement>("form > input"); // input principal "Ajouter"
+const ul: HTMLUListElement = document.querySelector("ul")!;
+const form: HTMLFormElement = document.querySelector("form")!;
+const input: HTMLInputElement = document.querySelector<HTMLInputElement>("form > input")!; // input principal "Ajouter"
 
 let timer: number;
 
 // Définir un tableau todos qui contient des objets représentant des tâches à faire
-const todos = [
+const todos: Todo[] = [
     {
         text: "Je suis une todo",
         done: false,
@@ -23,7 +24,7 @@ const todos = [
 ];
 
 // AJOUTER UN ÉCOUTEUR D'ÉVÉNEMENT SUBMIT SUR L'ÉLÉMENT FORM QUI APPELLE UNE FONCTION ANONYME LORSQU'UN FORMULAIRE EST SOUMIS
-form.addEventListener("submit", (event) => {
+form?.addEventListener("submit", (event: SubmitEvent): void => {
     // Empêcher le comportement par défaut du formulaire (qui est de recharger la page)
     event.preventDefault();
     // Récupérer la valeur de l'élément input qui contient le texte de la nouvelle tâche à ajouter
@@ -37,7 +38,7 @@ form.addEventListener("submit", (event) => {
 // DÉFINIR UNE FONCTION DISPLAYTODO QUI AFFICHE LA LISTE DES TÂCHES À L'ÉCRAN
 const displayTodo = () => {
     // Créer un tableau todosNode qui contient des éléments HTML li représentant chaque tâche du tableau todos
-    const todosNode = todos.map((todo, index) => {
+    const todosNode: HTMLLIElement[] = todos.map((todo: Todo, index: number): HTMLLIElement => {
         // Vérifier si la propriété editMode de l'objet todo est vraie ou fausse
         if (todo.editMode) {
             // Si elle est vraie, appeler la fonction createTodoEditElement qui crée un élément HTML li en mode édition
@@ -57,13 +58,13 @@ const displayTodo = () => {
  * CRÉATION D'UN ÉLÉMENT TODO
  */
 // Définir une fonction createTodoElement qui prend en paramètre un objet todo et son index index dans le tableau todos
-const createTodoElement = (todo, index) => {
+const createTodoElement = (todo: Todo, index: number) => {
     // Créer un élément HTML li
-    const li = document.createElement("li");
+    const li: HTMLLIElement = document.createElement("li");
 
     // Créer deux éléments HTML button pour supprimer et éditer la tâche
-    const buttonDelete = document.createElement("button");
-    const buttonEdit = document.createElement("button");
+    const buttonDelete: HTMLButtonElement = document.createElement("button");
+    const buttonEdit: HTMLButtonElement = document.createElement("button");
     // Assigner du texte aux boutons
     buttonDelete.innerText = "Supprimer";
     buttonEdit.innerText = "Éditer";
@@ -71,14 +72,14 @@ const createTodoElement = (todo, index) => {
     buttonDelete.className = "danger";
     buttonEdit.className = "primary";
     // Ajouter des écouteurs d'événement click sur les boutons qui appellent les fonctions deleTodo et toggleEditMode
-    buttonDelete.addEventListener("click", (event) => {
+    buttonDelete.addEventListener("click", (event: MouseEvent): void => {
         // Empêcher le comportement par défaut du bouton (qui est de soumettre le formulaire) et la propagation de l'événement aux éléments parents
         event.preventDefault();
         event.stopPropagation();
         // Appeler la fonction deleTodo en lui passant l'index de la tâche à supprimer
         deleTodo(index);
     });
-    buttonEdit.addEventListener("click", (event) => {
+    buttonEdit.addEventListener("click", (event: MouseEvent): void => {
         // Empêcher le comportement par défaut du bouton (qui est de soumettre le formulaire) et la propagation de l'événement aux éléments parents
         event.preventDefault();
         event.stopPropagation();
@@ -123,11 +124,11 @@ const createTodoElement = (todo, index) => {
  * CRÉATION D'UN ÉLÉMENT TODO EN MODE ÉDITION
  */
 // Définir une fonction createTodoEditElement qui prend en paramètre un objet todo et son index index dans le tableau todos
-const createTodoEditElement = (todo, index) => {
+const createTodoEditElement = (todo: Todo, index: number): HTMLLIElement => {
     // Créer un élément HTML li
-    const li = document.createElement("li");
+    const li: HTMLLIElement = document.createElement("li");
     // Créer un élément HTML input de type text qui contient le texte de la tâche à éditer
-    const editInput = document.createElement("input");
+    const editInput: HTMLInputElement = document.createElement("input");
     editInput.type = "text";
     editInput.value = todo.text;
 
@@ -137,7 +138,7 @@ const createTodoEditElement = (todo, index) => {
     buttonSave.innerText = "Enregistrer";
     buttonSave.className = "success";
     // Ajouter un écouteur d'événement click sur le bouton qui appelle la fonction editTodo
-    buttonSave.addEventListener("click", (event) => {
+    buttonSave.addEventListener("click", (event: MouseEvent): void => {
         // Empêcher le comportement par défaut du bouton (qui est de soumettre le formulaire) et la propagation de l'événement aux éléments parents
         event.preventDefault();
         event.stopPropagation();
@@ -148,6 +149,39 @@ const createTodoEditElement = (todo, index) => {
             input.focus();
         }, 200);
     });
+
+    // Ajout d'un écouteur sur l'input pour pouvoir enregistrer avec la touche entrée
+    editInput.addEventListener("keydown", (event: KeyboardEvent): void => {
+        if (event.key === "Enter") {
+            editTodo(index, editInput);
+        } else if (event.key === "Escape") {
+        }
+    });
+
+    // Créer un élément HTML button pour annuler la modification
+    const buttonCancel: HTMLButtonElement = document.createElement("button");
+    // Assigner du texte et une classe CSS au bouton
+    buttonCancel.innerText = "Annuler";
+    buttonCancel.className = "primary";
+    // Ajouter un écouteur d'événement click sur le bouton qui appelle la fonction toggleEditMode
+    buttonCancel.addEventListener("click", (event: MouseEvent): void => {
+        // Empêcher le comportement par défaut du bouton (qui est de soumettre le formulaire) et la propagation de l'événement aux éléments parents
+        event.preventDefault();
+        event.stopPropagation();
+        // Appeler la fonction toggleEditMode en lui passant l'index de la tâche à annuler la modification
+        toggleEditMode(index);
+        // Lancer une fonction asynchrone pour focus le champ input principal après sont ajout dans le dom par la fonction displayTodo()
+        setTimeout((): void => {
+            input.focus();
+        }, 200);
+    });
+    // Ajouter les éléments HTML input, buttonCancel et buttonSave à l'élément HTML li
+    li.append(editInput, buttonCancel, buttonSave);
+
+    // Lancer une fonction asynchrone pour focus le champ edit après sont ajout dans le dom par la fonction displayTodo()
+    setTimeout(() => {
+        editInput.focus();
+    }, 200);
     // Renvoyer l'élément HTML li créé
     return li;
 };
@@ -156,7 +190,7 @@ const createTodoEditElement = (todo, index) => {
  * AJOUT D'UNE TODO EN EMPÊCHANT L'ENTRÉE D'UNE CHAÎNE VIDE
  */
 // Définir une fonction addTodo qui prend en paramètre une chaîne de caractères text représentant le texte de la nouvelle tâche à ajouter
-const addTodo = (text) => {
+const addTodo = (text: string): void => {
     // Supprimer les espaces vides avant et après la chaîne de caractères en utilisant la méthode trim()
     text = text.trim();
     // Vérifier si la chaîne de caractères n'est pas vide
@@ -180,7 +214,7 @@ const addTodo = (text) => {
  * SUPPRESSION D'UNE TODO
  */
 // Définir une fonction deleTodo qui prend en paramètre un nombre index représentant l'index de la tâche à supprimer dans le tableau todos
-const deleTodo = (index) => {
+const deleTodo = (index: number): void => {
     // Supprimer un élément du tableau todos à l'index passé en paramètre en utilisant la méthode splice()
     todos.splice(index, 1);
     // Appeler la fonction displayTodo pour afficher la liste des tâches à l'écran
@@ -191,7 +225,7 @@ const deleTodo = (index) => {
  * CHANGEMENT DE STATUS D'UN TODO
  */
 // Définir une fonction toggleTodo qui prend en paramètre un nombre index représentant l'index de la tâche à basculer entre terminée et non terminée dans le tableau todos
-const toggleTodo = (index) => {
+const toggleTodo = (index: number): void => {
     // Modifier la propriété done de l'objet todo à l'index passé en paramètre en utilisant l'opérateur de négation !
     todos[index].done = !todos[index].done;
     // Appeler la fonction displayTodo pour afficher la liste des tâches à l'écran
@@ -202,7 +236,7 @@ const toggleTodo = (index) => {
  * PASSAGE D'UNE TODO EN MODE ÉDITION
  */
 // Définir une fonction toggleEditMode qui prend en paramètre un nombre index représentant l'index de la tâche à passer en mode édition dans le tableau todos
-const toggleEditMode = (index) => {
+const toggleEditMode = (index: number): void => {
     // Modifier la propriété editMode de l'objet todo à l'index passé en paramètre en utilisant l'opérateur de négation !
     todos[index].editMode = !todos[index].editMode;
     // Appeler la fonction displayTodo pour afficher la liste des tâches à l'écran
@@ -213,9 +247,9 @@ const toggleEditMode = (index) => {
  // MODIFICATION DU TEXTE D'UNE TODO EN MODE EDITION
  */
 // Définir une fonction editTodo qui prend en paramètre un nombre index représentant l'index de la tâche à modifier dans le tableau todos, et un élément HTML input qui contient le texte modifié de la tâche
-const editTodo = (index, input) => {
+const editTodo = (index: number, input: HTMLInputElement): void => {
     // Récupérer la valeur de l'élément HTML input
-    const value = input.value;
+    const value: string = input.value;
     // Modifier la propriété text de l'objet todo à l'index passé en paramètre avec la valeur de l'élément HTML input
     todos[index].text = value;
     // Modifier la propriété editMode de l'objet todo à l'index passé en paramètre à false

@@ -22,12 +22,12 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, "src/index.html"),
+            template: path.resolve(__dirname, "./index.html"),
         }),
     ],
     stats: "minimal",
     devtool: "source-map",
-    mode: "development",
+    mode: "production",
     devServer: {
         static: path.resolve(__dirname, "./dist"),
         open: true,
